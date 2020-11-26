@@ -11,12 +11,12 @@ class StepperTouch extends StatefulWidget {
     this.onChanged,
     this.direction = Axis.horizontal,
     this.withSpring = true,
+    this.decraseLimaition = double.negativeInfinity,
+    this.increaseLimaition = double.infinity,
+    this.backgroundColor = Colors.white,
     this.counterColor = const Color(0xFF6D72FF),
     this.dragButtonColor = Colors.white,
     this.buttonsColor = Colors.white,
-    this.decraseLimaition=double.negativeInfinity,
-    this.increaseLimaition=double.infinity,
-
   }) : super(key: key);
 
   /// the orientation of the stepper its horizontal or vertical.
@@ -27,6 +27,7 @@ class StepperTouch extends StatefulWidget {
 
   /// the limit of decrease
   final double increaseLimaition;
+
   /// the initial value of the stepper
   final int initialValue;
 
@@ -37,6 +38,7 @@ class StepperTouch extends StatefulWidget {
   /// defaults to true
   final bool withSpring;
 
+  final Color backgroundColor;
   final Color counterColor;
   final Color dragButtonColor;
   final Color buttonsColor;
@@ -45,8 +47,7 @@ class StepperTouch extends StatefulWidget {
   _Stepper2State createState() => _Stepper2State();
 }
 
-class _Stepper2State extends State<StepperTouch>
-    with SingleTickerProviderStateMixin {
+class _Stepper2State extends State<StepperTouch> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   Animation _animation;
   int _value;
@@ -100,7 +101,7 @@ class _Stepper2State extends State<StepperTouch>
           type: MaterialType.canvas,
           clipBehavior: Clip.antiAlias,
           borderRadius: BorderRadius.circular(60.0),
-          color: Colors.white.withOpacity(0.2),
+          color: widget.backgroundColor.withOpacity(0.2),
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
@@ -177,10 +178,20 @@ class _Stepper2State extends State<StepperTouch>
     bool isHor = widget.direction == Axis.horizontal;
     bool changed = false;
     if (_controller.value <= -0.20) {
-      setState(() => isHor ? widget.increaseLimaition==double.infinity? _value--:  _value==widget.decraseLimaition.toInt()?_value=0: _value-- :widget.increaseLimaition==double.infinity? _value++ : _value==widget.increaseLimaition.toInt()?_value: _value++);
+      setState(() =>
+      isHor ? widget.increaseLimaition == double.infinity ? _value-- : _value == widget.decraseLimaition.toInt()
+          ? _value = 0
+          : _value-- : widget.increaseLimaition == double.infinity ? _value++ : _value == widget.increaseLimaition.toInt()
+          ? _value
+          : _value++);
       changed = true;
     } else if (_controller.value >= 0.20) {
-      setState(() => isHor ? widget.increaseLimaition==double.infinity? _value++ : _value==widget.increaseLimaition.toInt()?_value: _value++ :widget.increaseLimaition==double.infinity? _value--: _value==widget.decraseLimaition.toInt()?_value=0: _value--);
+      setState(() =>
+      isHor ? widget.increaseLimaition == double.infinity ? _value++ : _value == widget.increaseLimaition.toInt()
+          ? _value
+          : _value++ : widget.increaseLimaition == double.infinity ? _value-- : _value == widget.decraseLimaition.toInt()
+          ? _value = 0
+          : _value--);
       changed = true;
     }
     if (widget.withSpring) {
